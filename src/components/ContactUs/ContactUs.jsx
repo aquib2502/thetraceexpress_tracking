@@ -127,7 +127,7 @@ const templateParams = {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <>
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
@@ -153,7 +153,7 @@ const templateParams = {
         </div>
       </div>
 
-      <Navbar />
+      {/* <Navbar /> */}
 
       {/* Hero Section */}
       <section className="relative z-10 pt-32 lg:pt-40 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8" data-animate id="hero">
@@ -552,7 +552,7 @@ const templateParams = {
           background: linear-gradient(180deg, #0891b2, #2563eb);
         }
       `}</style>
-    </div>
+    </>
   );
 };
 

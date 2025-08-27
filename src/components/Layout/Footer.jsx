@@ -1,8 +1,29 @@
 'use client'
 import React from 'react';
 import { Globe, Plane } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const Footer = () => {
+  const router = useRouter();
+
+  // Handle navigation - prioritize scrolling if sections exist, otherwise navigate
+  const handleNavigation = (sectionId, fallbackUrl) => {
+    const element = document.getElementById(sectionId);
+    
+    if (element) {
+      // If section exists, scroll to it
+      const offset = 80; // Account for fixed navbar
+      const elementPosition = element.offsetTop - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    } else {
+      // If section doesn't exist, navigate to the page
+      router.push(fallbackUrl);
+    }
+  };
+
   return (
     <footer className="relative z-10 bg-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -25,19 +46,28 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-gray-300 hover:text-red-400 transition-colors">
+                <button 
+                  onClick={() => handleNavigation('home', '/')}
+                  className="text-gray-300 hover:text-red-400 transition-colors cursor-pointer text-left"
+                >
                   Track Package
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/aboutus" className="text-gray-300 hover:text-red-400 transition-colors">
+                <button 
+                  onClick={() => handleNavigation('about', '/aboutus')}
+                  className="text-gray-300 hover:text-red-400 transition-colors cursor-pointer text-left"
+                >
                   About Us
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/contactus" className="text-gray-300 hover:text-red-400 transition-colors">
+                <button 
+                  onClick={() => handleNavigation('contact', '/contactus')}
+                  className="text-gray-300 hover:text-red-400 transition-colors cursor-pointer text-left"
+                >
                   Customer Support
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -46,14 +76,14 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <ul className="space-y-2 text-gray-300">
               <li>📞 +91 8419958646</li>
-                <li>
-    <a 
-      href="mailto:thetraceexpress@gmail.com"
-      className="hover:text-blue-300"
-    >
-      📧 thetraceexpress@gmail.com
-    </a>
-  </li>
+              <li>
+                <a 
+                  href="mailto:thetraceexpress@gmail.com"
+                  className="hover:text-blue-300"
+                >
+                  📧 thetraceexpress@gmail.com
+                </a>
+              </li>
               <li>📍 Marol , Andheri (East)<br />Mumbai, India</li>
             </ul>
           </div>

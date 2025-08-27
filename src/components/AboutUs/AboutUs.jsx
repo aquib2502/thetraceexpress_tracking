@@ -103,8 +103,8 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
+<>
+    {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-cyan-400/20 to-blue-600/20 rounded-full blur-3xl animate-float"></div>
@@ -138,7 +138,7 @@ const AboutUs = () => {
         </div>
       </div>
 
-      <Navbar />
+      {/* <Navbar /> */}
       
       {/* Hero Section */}
       <section className="relative z-10 pt-32 lg:pt-40 pb-16 sm:pb-20 lg:pb-24 px-4 sm:px-6 lg:px-8" data-animate id="hero">
@@ -382,7 +382,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      <Footer />
+      {/* <Footer /> */}
 
       {/* Custom CSS Animations */}
       <style jsx>{`
@@ -544,7 +544,7 @@ const AboutUs = () => {
           }
         }
       `}</style>
-    </div>
+      </>
   );
 };
 
