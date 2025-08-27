@@ -1,6 +1,6 @@
 'use client'
-import React, { useState } from 'react';
-import { Search, Globe, Plane, Package, MapPin, Calendar, Truck, CheckCircle, Clock, AlertCircle, FootprintsIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Globe, Plane, Package, MapPin, Calendar, Truck, CheckCircle, Clock, AlertCircle, ArrowRight, Star, Shield, Zap, Users, TrendingUp, Sparkles } from 'lucide-react';
 import Navbar from '../Layout/Navbar';
 import Footer from '../Layout/Footer';
 
@@ -9,6 +9,42 @@ const TraceExpress = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
   const [trackingResult, setTrackingResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [animatedStats, setAnimatedStats] = useState({ countries: 0, tracking: 0, delivery: 0 });
+  const [mounted, setMounted] = useState(false);
+
+  // Fix hydration issues by ensuring component is mounted
+  useEffect(() => {
+    setMounted(true);
+    setIsVisible(true);
+    
+    // Animate stats with requestAnimationFrame for better performance
+    const animateStats = () => {
+      const duration = 2000;
+      const startTime = performance.now();
+      
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        
+        setAnimatedStats({
+          countries: Math.round(220 * easeOut),
+          tracking: Math.round(24 * easeOut),
+          delivery: Math.round(99.9 * easeOut)
+        });
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      
+      requestAnimationFrame(animate);
+    };
+    
+    const timer = setTimeout(animateStats, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleTrack = async () => {
     if (!trackingNumber.trim()) return;
@@ -53,7 +89,7 @@ const TraceExpress = () => {
           state: event.event_state,
           remark: event.event_remark
         }))
-        .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort chronologically
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
       
       // Format the result
       setTrackingResult({
@@ -73,7 +109,6 @@ const TraceExpress = () => {
       
     } catch (error) {
       console.error('Tracking API Error:', error);
-      // Show error state
       setTrackingResult({
         error: true,
         message: error.message || 'Unable to fetch tracking information. Please check your tracking number and try again.',
@@ -88,101 +123,138 @@ const TraceExpress = () => {
   const StatusIcon = ({ status }) => {
     switch (status) {
       case 'Delivered':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className="w-5 h-5 text-emerald-400" />;
       case 'In Transit':
       case 'Out for Delivery':
-        return <Truck className="w-5 h-5 text-blue-500" />;
+        return <Truck className="w-5 h-5 text-cyan-400" />;
       case 'Order Confirmed':
-        return <Package className="w-5 h-5 text-orange-500" />;
+        return <Package className="w-5 h-5 text-purple-400" />;
       default:
-        return <Clock className="w-5 h-5 text-gray-400" />;
+        return <Clock className="w-5 h-5 text-slate-400" />;
     }
   };
 
+  // Don't render until mounted to prevent hydration issues
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
-    <Navbar />
-      {/* Background World Map Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-10 w-32 h-32 border border-gray-300 rounded-full"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 border border-gray-300 rounded-full"></div>
-        <div className="absolute bottom-32 left-1/4 w-40 h-40 border border-gray-300 rounded-full"></div>
-        <div className="absolute bottom-20 right-1/3 w-28 h-28 border border-gray-300 rounded-full"></div>
-        {/* Gradient lines */}
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-gray-50 to-transparent"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+      {/* Floating Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-cyan-400/10 to-blue-500/10 rounded-full blur-3xl opacity-70 animate-float-slow"></div>
+        <div className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-purple-400/10 to-pink-500/10 rounded-full blur-3xl opacity-60 animate-float-slower"></div>
+        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-gradient-to-r from-emerald-400/10 to-cyan-500/10 rounded-full blur-3xl opacity-50 animate-float-slowest"></div>
+        
+        {/* Twinkling particles */}
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400 rounded-full opacity-60 animate-twinkle"></div>
+        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-purple-400 rounded-full opacity-70 animate-twinkle-delayed"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-1.5 h-1.5 bg-emerald-400 rounded-full opacity-80 animate-twinkle-slow"></div>
       </div>
 
+      {/* Navigation */}
+      <Navbar />
+
       {/* Hero Section */}
-      <section className="relative z-10 mt-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto w-full">
+      <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-20 pb-12 lg:py-28">
+        <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Content */}
-            <div className="text-left lg:pr-8">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-                Track Your <span className="text-red-500">Express</span> Shipments
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Experience seamless global logistics with real-time tracking, secure delivery, and worldwide coverage. 
-                Your packages, our priority.
-              </p>
-
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                <div className="text-center p-4 bg-white/50 rounded-xl backdrop-blur-sm border border-white/20">
-                  <div className="text-2xl font-bold text-red-500">220+</div>
-                  <div className="text-sm text-gray-600">Countries</div>
+            <div className={`space-y-8 transition-all duration-1000 ease-out ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
+              <div className="space-y-6">
+                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-md border border-cyan-500/20 rounded-full px-4 py-2 text-cyan-300 text-sm font-semibold">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Trusted by 10M+ customers worldwide</span>
                 </div>
-                <div className="text-center p-4 bg-white/50 rounded-xl backdrop-blur-sm border border-white/20">
-                  <div className="text-2xl font-bold text-blue-500">24/7</div>
-                  <div className="text-sm text-gray-600">Tracking</div>
-                </div>
-                <div className="text-center p-4 bg-white/50 rounded-xl backdrop-blur-sm border border-white/20">
-                  <div className="text-2xl font-bold text-green-500">99.9%</div>
-                  <div className="text-sm text-gray-600">Delivery</div>
-                </div>
+                
+                <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-tight">
+                  Track Your{' '}
+                  <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-gradient">
+                    Express
+                  </span>{' '}
+                  <br className="hidden sm:block" />
+                  Shipments
+                </h1>
+                
+                <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-lg">
+                  Experience seamless global logistics with real-time tracking, secure delivery, and worldwide coverage. 
+                  Your packages, our priority.
+                </p>
               </div>
 
-              {/* Tracking Form */}
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-6 border border-white/30">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Track Your Package</h3>
+              {/* Animated Stats */}
+              <div className="grid grid-cols-3 gap-4 md:gap-6">
+                {[
+                  { value: `${animatedStats.countries}+`, label: 'Countries', icon: Globe, color: 'from-cyan-400 to-blue-500' },
+                  { value: `${animatedStats.tracking}/7`, label: 'Tracking', icon: Clock, color: 'from-purple-400 to-pink-500' },
+                  { value: `${animatedStats.delivery}%`, label: 'Delivery', icon: CheckCircle, color: 'from-emerald-400 to-cyan-500' }
+                ].map((stat, index) => (
+                  <div key={index} className="group cursor-pointer">
+                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:transform hover:scale-105">
+                      <div className="flex items-center justify-center mb-2">
+                        <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-white/70" />
+                      </div>
+                      <div className={`text-2xl md:text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+                        {stat.value}
+                      </div>
+                      <div className="text-xs md:text-sm text-slate-400 font-medium mt-1">{stat.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Enhanced Tracking Form */}
+              <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-6 md:p-8 hover:bg-white/15 transition-all duration-500">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                    <Search className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Track Your Package</h3>
+                </div>
                 
-                <div className="space-y-3">
-                  {/* Dropdown */}
-                  <select 
-                    value={trackingType}
-                    onChange={(e) => setTrackingType(e.target.value)}
-                    className="w-full px-4 py-3 bg-white/70 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all duration-200 text-gray-700 font-medium backdrop-blur-sm"
-                  >
-                    <option value="AWB No.">AWB No.</option>
-                    <option value="Forwarding No.">Forwarding No.</option>
-                    <option value="Reference No.">Reference No.</option>
-                  </select>
+                <div className="space-y-4">
+                  {/* Enhanced Dropdown */}
+                  <div className="relative">
+                    <select 
+                      value={trackingType}
+                      onChange={(e) => setTrackingType(e.target.value)}
+                      className="w-full px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition-all duration-300 text-white font-semibold cursor-pointer hover:bg-white/15"
+                    >
+                      <option value="AWB No." className="bg-slate-800 text-white">AWB Number</option>
+                      <option value="Forwarding No." className="bg-slate-800 text-white">Forwarding Number</option>
+                      <option value="Reference No." className="bg-slate-800 text-white">Reference Number</option>
+                    </select>
+                  </div>
 
-                  {/* Input Field */}
-                  <input
-                    type="text"
-                    value={trackingNumber}
-                    onChange={(e) => setTrackingNumber(e.target.value)}
-                    placeholder="Enter your tracking number"
-                    className="w-full px-4 py-3 bg-white/70 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all duration-200 text-gray-700 font-medium backdrop-blur-sm"
-                    onKeyPress={(e) => e.key === 'Enter' && handleTrack()}
-                  />
+                  {/* Enhanced Input Field */}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={trackingNumber}
+                      onChange={(e) => setTrackingNumber(e.target.value)}
+                      placeholder="Enter your tracking number"
+                      className="w-full px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition-all duration-300 text-white font-semibold placeholder-slate-400 hover:bg-white/15"
+                      onKeyPress={(e) => e.key === 'Enter' && handleTrack()}
+                    />
+                  </div>
 
-                  {/* Track Button */}
+                  {/* Enhanced Track Button */}
                   <button
                     onClick={handleTrack}
                     disabled={isLoading || !trackingNumber.trim()}
-                    className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] disabled:transform-none disabled:cursor-not-allowed flex items-center justify-center space-x-3 group"
                   >
                     {isLoading ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Tracking...</span>
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                        <span className="text-lg">Tracking...</span>
                       </>
                     ) : (
                       <>
-                        <Search className="w-5 h-5" />
-                        <span>Track Now</span>
+                        <Search className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                        <span className="text-lg">Track Now</span>
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                       </>
                     )}
                   </button>
@@ -191,219 +263,456 @@ const TraceExpress = () => {
             </div>
 
             {/* Right Column - Globe Image */}
-            <div className="relative flex items-center justify-center lg:justify-end">
+            <div className={`hidden lg:flex relative items-center justify-center transition-all duration-1000 ease-out delay-300 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
               <div className="relative">
-                {/* Main Globe Image */}
-                <div className="relative w-96 h-96 lg:w-[500px] lg:h-[500px]">
+                <div className="relative w-[500px] h-[500px] group">
                   <img 
                     src="/airplane_globe.jpg" 
                     alt="The Trace Express Globe with Airplane"
-                    className="w-full h-full object-contain drop-shadow-2xl animate-pulse"
+                    className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                   
-                  {/* Animated Glow Rings */}
+                  {/* Enhanced Glow Rings */}
                   <div className="absolute inset-0 -z-10">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-500/20 to-blue-500/20 animate-ping" style={{ animationDuration: '3s' }}></div>
-                    <div className="absolute inset-4 rounded-full bg-gradient-to-r from-blue-500/15 to-red-500/15 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }}></div>
-                    <div className="absolute inset-8 rounded-full bg-gradient-to-r from-red-500/10 to-blue-500/10 animate-ping" style={{ animationDuration: '4s', animationDelay: '1s' }}></div>
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 animate-pulse-slow"></div>
+                    <div className="absolute inset-8 rounded-full bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-cyan-500/15 animate-pulse-slower"></div>
                   </div>
 
                   {/* Floating Elements */}
-                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}></div>
-                  <div className="absolute -bottom-6 -left-6 w-6 h-6 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '3s' }}></div>
-                  <div className="absolute top-1/4 -left-8 w-4 h-4 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '2.5s' }}></div>
-                  <div className="absolute bottom-1/4 -right-8 w-5 h-5 bg-yellow-500 rounded-full animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2s' }}></div>
+                  <div className="absolute -top-6 -right-6 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-lg flex items-center justify-center animate-float">
+                    <Package className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="absolute -bottom-8 -left-8 w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full shadow-lg flex items-center justify-center animate-float-delayed">
+                    <Truck className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="absolute top-1/4 -left-10 w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full shadow-lg animate-float-slow"></div>
+                  <div className="absolute bottom-1/4 -right-10 w-7 h-7 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full shadow-lg flex items-center justify-center animate-float-slower">
+                    <Globe className="w-3 h-3 text-white" />
+                  </div>
                 </div>
-
-                {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-blue-500/5 rounded-full blur-3xl scale-150 -z-20"></div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Scroll Indicator */}
-        {/* <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-gray-400 rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div> */}
       </section>
 
-      {/* Tracking Results */}
+      {/* Enhanced Tracking Results */}
       {trackingResult && (
-        <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 fade-in-up">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden">
               
               {/* Error State */}
               {trackingResult.error ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <AlertCircle className="w-8 h-8 text-red-500" />
+                <div className="text-center py-16 px-8">
+                  <div className="w-20 h-20 bg-gradient-to-br from-red-500/20 to-pink-500/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/30">
+                    <AlertCircle className="w-10 h-10 text-red-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">Tracking Information Not Found</h3>
-                  <p className="text-gray-600 mb-6">{trackingResult.message}</p>
-                  <div className="bg-gray-50 rounded-xl p-4 max-w-md mx-auto">
-                    <p className="text-sm text-gray-500 mb-1">Searched for</p>
-                    <p className="font-semibold text-gray-900">{trackingResult.trackingNumber}</p>
-                    <p className="text-sm text-gray-500">Type: {trackingResult.type}</p>
+                  <h3 className="text-3xl font-bold text-white mb-4">Tracking Information Not Found</h3>
+                  <p className="text-slate-300 mb-8 text-lg">{trackingResult.message}</p>
+                  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-md mx-auto border border-white/20">
+                    <p className="text-sm text-slate-400 mb-2">Searched for</p>
+                    <p className="font-bold text-white text-lg">{trackingResult.trackingNumber}</p>
+                    <p className="text-sm text-slate-400 mt-1">Type: {trackingResult.type}</p>
                   </div>
                 </div>
               ) : (
-                <>
-                  {/* Success State */}
-                  <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-2xl font-bold text-gray-900">Tracking Results</h3>
-                    <div className="flex items-center space-x-2">
-                      <div className={`w-3 h-3 rounded-full ${
-                        trackingResult.status === 'DELIVERED' ? 'bg-green-500' : 
-                        trackingResult.status === 'IN TRANSIT' ? 'bg-blue-500' : 
-                        'bg-yellow-500'
+                <div className="p-8 lg:p-12">
+                  {/* Success Header */}
+                  <div className="flex items-center justify-between mb-10 pb-8 border-b border-white/10">
+                    <h3 className="text-3xl font-bold text-white">Tracking Results</h3>
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-4 h-4 rounded-full animate-pulse ${
+                        trackingResult.status === 'DELIVERED' ? 'bg-emerald-500 shadow-emerald-500/50 shadow-lg' : 
+                        trackingResult.status === 'IN TRANSIT' ? 'bg-cyan-500 shadow-cyan-500/50 shadow-lg' : 
+                        'bg-purple-500 shadow-purple-500/50 shadow-lg'
                       }`}></div>
-                      <span className={`text-lg font-semibold ${
-                        trackingResult.status === 'DELIVERED' ? 'text-green-600' : 
-                        trackingResult.status === 'IN TRANSIT' ? 'text-blue-600' : 
-                        'text-yellow-600'
+                      <span className={`text-xl font-bold ${
+                        trackingResult.status === 'DELIVERED' ? 'text-emerald-400' : 
+                        trackingResult.status === 'IN TRANSIT' ? 'text-cyan-400' : 
+                        'text-purple-400'
                       }`}>{trackingResult.status}</span>
                     </div>
                   </div>
 
-                  {/* Package Info */}
-                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 mb-1">AWB Number</p>
-                      <p className="font-semibold text-gray-900">{trackingResult.trackingNumber}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 mb-1">Consignee</p>
-                      <p className="font-semibold text-gray-900">{trackingResult.consignee || trackingResult.receiverName}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 mb-1">Origin</p>
-                      <p className="font-semibold text-gray-900">{trackingResult.originCity || trackingResult.origin}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-sm text-gray-500 mb-1">Destination</p>
-                      <p className="font-semibold text-gray-900">{trackingResult.destinationCity || trackingResult.destination}</p>
-                    </div>
+                  {/* Package Info Grid */}
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                    {[
+                      { label: 'AWB Number', value: trackingResult.trackingNumber, icon: Package, color: 'cyan' },
+                      { label: 'Consignee', value: trackingResult.consignee || trackingResult.receiverName, icon: Users, color: 'blue' },
+                      { label: 'Origin', value: trackingResult.originCity || trackingResult.origin, icon: MapPin, color: 'emerald' },
+                      { label: 'Destination', value: trackingResult.destinationCity || trackingResult.destination, icon: MapPin, color: 'purple' }
+                    ].map((item, index) => (
+                      <div key={index} className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 group">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className={`w-8 h-8 bg-${item.color}-500/20 backdrop-blur-md rounded-lg flex items-center justify-center border border-${item.color}-500/30`}>
+                            <item.icon className={`w-4 h-4 text-${item.color}-400`} />
+                          </div>
+                          <p className="text-sm text-slate-400 font-semibold">{item.label}</p>
+                        </div>
+                        <p className="font-bold text-white text-lg group-hover:text-slate-200 transition-colors duration-200">{item.value}</p>
+                      </div>
+                    ))}
                   </div>
 
                   {/* Ship Date */}
                   {trackingResult.shipDate && (
-                    <div className="bg-blue-50 rounded-xl p-4 mb-8">
-                      <div className="flex items-center space-x-2">
-                        <Calendar className="w-5 h-5 text-blue-500" />
-                        <span className="text-sm text-blue-600 font-medium">Ship Date: {trackingResult.shipDate}</span>
+                    <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-md rounded-2xl p-6 mb-10 border border-blue-500/20">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-blue-500/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-blue-500/30">
+                          <Calendar className="w-5 h-5 text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-blue-400 font-semibold">Ship Date</p>
+                          <p className="text-lg font-bold text-white">{trackingResult.shipDate}</p>
+                        </div>
                       </div>
                     </div>
                   )}
 
                   {/* Timeline */}
-                  <div className="space-y-4">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-6">Tracking Timeline</h4>
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-700 backdrop-blur-md rounded-xl flex items-center justify-center border border-slate-500/30">
+                        <Clock className="w-5 h-5 text-white" />
+                      </div>
+                      <h4 className="text-2xl font-bold text-white">Tracking Timeline</h4>
+                    </div>
+                    
                     {trackingResult.timeline && trackingResult.timeline.length > 0 ? (
                       <div className="space-y-4">
                         {trackingResult.timeline.map((event, index) => (
-                          <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
-                            <div className="flex-shrink-0 mt-1">
-                              <div className={`w-3 h-3 rounded-full ${
-                                event.state === 'delivered' ? 'bg-green-500' : 
-                                event.state === 'redrs' || event.state === 'manifest' ? 'bg-blue-500' : 
-                                event.state === 'shipment_hold' ? 'bg-red-500' :
-                                'bg-yellow-500'
-                              }`}></div>
+                          <div key={index} className="flex items-start space-x-6 p-6 bg-white/10 backdrop-blur-md rounded-2xl hover:bg-white/15 transition-all duration-300 group border border-white/20">
+                            <div className="flex-shrink-0 mt-2">
+                              <div className={`w-4 h-4 rounded-full shadow-lg ${
+                                event.state === 'delivered' ? 'bg-emerald-500 shadow-emerald-500/50' : 
+                                event.state === 'redrs' || event.state === 'manifest' ? 'bg-cyan-500 shadow-cyan-500/50' : 
+                                event.state === 'shipment_hold' ? 'bg-red-500 shadow-red-500/50' :
+                                'bg-purple-500 shadow-purple-500/50'
+                              } animate-pulse`}></div>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
-                                <p className="text-lg font-semibold text-gray-900">{event.status}</p>
-                                <p className="text-sm text-gray-500">{event.date}</p>
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                                <p className="text-lg font-bold text-white group-hover:text-slate-200 transition-colors duration-200">{event.status}</p>
+                                <p className="text-sm text-slate-400 font-semibold bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">{event.date}</p>
                               </div>
-                              <div className="flex items-center space-x-1 mt-1">
-                                <MapPin className="w-4 h-4 text-gray-400" />
-                                <p className="text-gray-600">{event.location}</p>
+                              <div className="flex items-center space-x-2 mb-2">
+                                <MapPin className="w-4 h-4 text-slate-400" />
+                                <p className="text-slate-300 font-medium">{event.location}</p>
                               </div>
                               {event.remark && (
-                                <p className="text-sm text-gray-500 mt-1 italic">{event.remark}</p>
+                                <p className="text-sm text-slate-400 italic bg-white/10 backdrop-blur-md p-3 rounded-lg mt-2 border border-white/20">{event.remark}</p>
                               )}
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8">
-                        <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">No tracking events available</p>
+                      <div className="text-center py-12">
+                        <Clock className="w-16 h-16 text-slate-400 mx-auto mb-6" />
+                        <p className="text-slate-300 text-lg">No tracking events available</p>
                       </div>
                     )}
                   </div>
 
-                  {/* Additional Actions */}
-                  <div className="mt-8 pt-6 border-t border-gray-200">
+                  {/* Action Buttons */}
+                  <div className="mt-12 pt-8 border-t border-white/10">
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                       <button 
                         onClick={() => window.print()}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200"
+                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center space-x-2"
                       >
-                        Print Details
+                        <Package className="w-5 h-5" />
+                        <span>Print Details</span>
                       </button>
                       <button 
                         onClick={() => {
                           setTrackingResult(null);
                           setTrackingNumber('');
                         }}
-                        className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200"
+                        className="bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center space-x-2"
                       >
-                        Track Another Package
+                        <Search className="w-5 h-5" />
+                        <span>Track Another Package</span>
                       </button>
                     </div>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>
         </section>
       )}
 
-      {/* Features Section */}
-      <section className="relative z-10 py-20 px-4 sm:px-6 lg:px-8">
+      {/* Enhanced Features Section */}
+      <section className={`relative z-10 py-20 px-4 sm:px-6 lg:px-8 transition-all duration-1000 ease-out delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose The Trace Express?</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Delivering excellence across the globe with cutting-edge technology and unmatched reliability.
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-md border border-cyan-500/20 rounded-full px-6 py-3 text-cyan-300 text-sm font-bold mb-6">
+              <Zap className="w-4 h-4" />
+              <span>Why Choose Trace Express?</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Delivering Excellence <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Worldwide</span>
+            </h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              Experience cutting-edge technology and unmatched reliability with our global shipping network that connects businesses and individuals across the world.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Globe className="w-8 h-8 text-red-500" />
+            {[
+              {
+                icon: Globe,
+                title: "Global Coverage",
+                description: "Worldwide shipping network covering 220+ countries and territories with local expertise.",
+                color: "cyan"
+              },
+              {
+                icon: Clock,
+                title: "Real-Time Tracking",
+                description: "Advanced tracking technology with live updates and instant notifications for complete visibility.",
+                color: "blue"
+              },
+              {
+                icon: Shield,
+                title: "Secure Delivery",
+                description: "Military-grade security measures and insurance options ensuring safe and timely deliveries.",
+                color: "emerald"
+              }
+            ].map((feature, index) => (
+              <div 
+                key={index}
+                className="text-center p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-500 group hover:transform hover:scale-105"
+              >
+                <div className={`w-20 h-20 bg-gradient-to-br from-${feature.color}-500/20 to-${feature.color}-600/20 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-${feature.color}-500/30`}>
+                  <feature.icon className={`w-10 h-10 text-${feature.color}-400`} />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-slate-200 transition-colors duration-200">{feature.title}</h3>
+                <p className="text-slate-300 leading-relaxed">{feature.description}</p>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Global Coverage</h3>
-              <p className="text-gray-600">Worldwide shipping network covering 220+ countries and territories.</p>
-            </div>
+            ))}
+          </div>
 
-            <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Clock className="w-8 h-8 text-blue-500" />
+          {/* Additional Stats Section */}
+          <div className="mt-20 bg-gradient-to-r from-slate-900/80 to-purple-900/80 backdrop-blur-xl rounded-3xl p-12 text-white relative overflow-hidden border border-white/10">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-purple-500/5 rounded-3xl"></div>
+            <div className="relative z-10">
+              <div className="text-center mb-12">
+                <h3 className="text-3xl md:text-4xl font-bold mb-4">Trusted by Millions</h3>
+                <p className="text-slate-300 text-lg">Join thousands of businesses who trust us with their most important deliveries</p>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Real-Time Tracking</h3>
-              <p className="text-gray-600">Live updates and notifications for complete shipment visibility.</p>
-            </div>
-
-            <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-8 h-8 text-green-500" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                {[
+                  { number: "10M+", label: "Packages Delivered", icon: Package },
+                  { number: "50K+", label: "Happy Customers", icon: Users },
+                  { number: "99.8%", label: "On-Time Delivery", icon: CheckCircle },
+                  { number: "24/7", label: "Customer Support", icon: Clock }
+                ].map((stat, index) => (
+                  <div key={index} className="text-center group">
+                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-colors duration-300 border border-white/20">
+                      <stat.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">{stat.number}</div>
+                    <div className="text-slate-300 text-sm">{stat.label}</div>
+                  </div>
+                ))}
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Secure Delivery</h3>
-              <p className="text-gray-600">Advanced security measures ensuring safe and timely deliveries.</p>
             </div>
           </div>
         </div>
       </section>
-      <Footer />
-    
+
+      {/* Enhanced Footer */}
+     <Footer />
+
+      {/* Custom CSS for animations and styles */}
+      <style jsx>{`
+        .fade-in-up {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes float-slow {
+          0%, 100% { 
+            transform: translateY(0px) translateX(0px);
+          }
+          33% { 
+            transform: translateY(-20px) translateX(10px);
+          }
+          66% { 
+            transform: translateY(10px) translateX(-5px);
+          }
+        }
+        
+        @keyframes float-slower {
+          0%, 100% { 
+            transform: translateY(0px) translateX(0px);
+          }
+          50% { 
+            transform: translateY(-15px) translateX(-10px);
+          }
+        }
+        
+        @keyframes float-slowest {
+          0%, 100% { 
+            transform: translateY(0px) translateX(0px);
+          }
+          25% { 
+            transform: translateY(15px) translateX(5px);
+          }
+          75% { 
+            transform: translateY(-10px) translateX(-15px);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        @keyframes twinkle-delayed {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        
+        @keyframes twinkle-slow {
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.3); }
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.6; }
+        }
+        
+        @keyframes pulse-slower {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.4; }
+        }
+        
+        @keyframes gradient {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        .animate-float-slow {
+          animation: float-slow 8s ease-in-out infinite;
+        }
+        
+        .animate-float-slower {
+          animation: float-slower 10s ease-in-out infinite;
+        }
+        
+        .animate-float-slowest {
+          animation: float-slowest 12s ease-in-out infinite;
+        }
+        
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+        
+        .animate-float-delayed {
+          animation: float-delayed 3s ease-in-out infinite 1s;
+        }
+        
+        .animate-twinkle {
+          animation: twinkle 2s ease-in-out infinite;
+        }
+        
+        .animate-twinkle-delayed {
+          animation: twinkle-delayed 2.5s ease-in-out infinite 0.5s;
+        }
+        
+        .animate-twinkle-slow {
+          animation: twinkle-slow 3s ease-in-out infinite 1s;
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 4s ease-in-out infinite;
+        }
+        
+        .animate-pulse-slower {
+          animation: pulse-slower 6s ease-in-out infinite 1s;
+        }
+        
+        .animate-gradient {
+          background-size: 400% 400%;
+          animation: gradient 3s ease infinite;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.1);
+          border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #06b6d4, #3b82f6);
+          border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, #0891b2, #2563eb);
+        }
+        
+        /* Smooth scrolling */
+        html {
+          scroll-behavior: smooth;
+        }
+        
+        /* Focus states for accessibility */
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+          outline: 2px solid #06b6d4;
+          outline-offset: 2px;
+        }
+        
+        /* Backdrop blur support */
+        .backdrop-blur-xl {
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+        }
+        
+        .backdrop-blur-md {
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+        }
+        
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 768px) {
+          .animate-float-slow,
+          .animate-float-slower,
+          .animate-float-slowest {
+            animation-duration: 6s;
+          }
+        }
+      `}</style>
     </div>
   );
 };

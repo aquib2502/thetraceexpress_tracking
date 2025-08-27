@@ -46,8 +46,15 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <ul className="space-y-2 text-gray-300">
               <li>📞 +91 8419958646</li>
-              <li>📧 ahadmyabdul@gmail.com</li>
-              <li>📍 Marol Pipe Line<br />Mumbai, India</li>
+                <li>
+    <a 
+      href="mailto:thetraceexpress@gmail.com"
+      className="hover:text-blue-300"
+    >
+      📧 thetraceexpress@gmail.com
+    </a>
+  </li>
+              <li>📍 Marol , Andheri (East)<br />Mumbai, India</li>
             </ul>
           </div>
         </div>
