@@ -352,7 +352,7 @@ const templateParams = {
                     </div>
                     <div>
                       <p className="font-bold text-white">Business Hours</p>
-                      <p className="text-slate-300">24/7 Operations<br />Support: Mon-Fri 9AM-6PM</p>
+                      <p className="text-slate-300">24/7 Operations<br />Support: Mon-Fri 11AM-11PM</p>
                     </div>
                   </div>
                 </div>
