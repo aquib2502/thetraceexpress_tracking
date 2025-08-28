@@ -372,7 +372,7 @@ const AboutUs = () => {
                 Track Your Package
               </button>
             </a>
-            <a href='/contactus'>
+            <a href='#contact'>
               <button className="w-full sm:w-auto bg-transparent border-2 border-white text-white hover:bg-white hover:text-slate-900 font-bold px-10 py-5 sm:px-12 sm:py-6 lg:px-16 lg:py-8 rounded-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 text-lg sm:text-xl lg:text-2xl">
                 <MousePointer className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 inline mr-3" />
                 Contact Us Today
