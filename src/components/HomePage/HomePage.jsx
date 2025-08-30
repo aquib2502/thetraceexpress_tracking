@@ -278,17 +278,20 @@ const TraceExpress = () => {
                     <div className="absolute inset-8 rounded-full bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-cyan-500/15 animate-pulse-slower"></div>
                   </div>
 
-                  {/* Floating Elements */}
-                  <div className="absolute -top-6 -right-6 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-lg flex items-center justify-center animate-float">
-                    <Package className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="absolute -bottom-8 -left-8 w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full shadow-lg flex items-center justify-center animate-float-delayed">
-                    <Truck className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="absolute top-1/4 -left-10 w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full shadow-lg animate-float-slow"></div>
-                  <div className="absolute bottom-1/4 -right-10 w-7 h-7 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full shadow-lg flex items-center justify-center animate-float-slower">
-                    <Globe className="w-3 h-3 text-white" />
-                  </div>
+                {/* Floating Elements */}
+<div className="absolute -top-6 -right-6 w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-lg flex items-center justify-center animate-float">
+  <Package className="w-8 h-8 text-white" />
+</div>
+<div className="absolute -bottom-8 -left-8 w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full shadow-lg flex items-center justify-center animate-float-delayed">
+  <Truck className="w-6 h-6 text-white" />
+</div>
+<div className="absolute top-1/4 -left-10 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full shadow-lg flex items-center justify-center animate-float-slow">
+  <Star className="w-6 h-6 text-white" />
+</div>
+<div className="absolute bottom-1/4 -right-10 w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full shadow-lg flex items-center justify-center animate-float-slower">
+  <Globe className="w-6 h-6 text-white" />
+</div>
+
                 </div>
               </div>
             </div>
