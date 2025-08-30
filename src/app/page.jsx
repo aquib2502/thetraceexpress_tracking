@@ -49,9 +49,10 @@ const MainHomepage = () => {
       </div>
 
       {/* WhatsApp Widget */}
-      <div className="fixed bottom-4 right-4 z-50 flex items-center justify-center">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-center">
+        <span className="text-white text-sm mb-2">Chat with us</span>
         <a 
-          href="https://wa.me/8419958646" 
+          href="https://wa.me/yourwhatsappphonenumber" 
           target="_blank" 
           rel="noopener noreferrer"
           className="bg-green-500 text-white p-4 rounded-full shadow-lg hover:shadow-2xl transition duration-300 flex items-center justify-center"
