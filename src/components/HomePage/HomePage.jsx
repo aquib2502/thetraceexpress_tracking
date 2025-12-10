@@ -58,7 +58,7 @@ const TraceExpress = () => {
 
     // If tracking number starts with "TTE", use internal tracking API
     if (trimmedTrackingNumber.startsWith("TTE")) {
-      const apiUrl = "http://localhost:5000/api/tracking/getTracking";
+      const apiUrl = "https://api.thetraceexpress.com/api/tracking/getTracking";
 
       const response = await axios.post(apiUrl, {
         orderId: trimmedTrackingNumber,
